@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能合同审核系统 - 项目汇报</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Microsoft YaHei", "SimSun", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 60px;
+            display: none;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide h1 {
+            font-size: 48px;
+            color: #1E3A8A;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 4px solid #3B82F6;
+            padding-bottom: 20px;
+        }
+        
+        .slide h2 {
+            font-size: 36px;
+            color: #1E3A8A;
+            margin-bottom: 25px;
+            border-left: 6px solid #3B82F6;
+            padding-left: 20px;
+        }
+        
+        .slide h3 {
+            font-size: 28px;
+            color: #065F46;
+            margin: 20px 0 15px 0;
+        }
+        
+        .slide ul {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .slide li {
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+        
+        .slide p {
+            font-size: 22px;
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .column {
+            background: #F3F4F6;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #3B82F6;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .module-card {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .module-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .module-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1E3A8A;
+        }
+        
+        .highlight-box {
+            background: #FEF3C7;
+            border-left: 6px solid #F59E0B;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn:hover {
+            background: #2563EB;
+        }
+        
+        .nav-btn:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1E3A8A;
+            z-index: 1000;
+        }
+        
+        .cover-slide {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .cover-slide h1 {
+            font-size: 64px;
+            margin-bottom: 30px;
+            border: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cover-slide .subtitle {
+            font-size: 32px;
+            margin-bottom: 50px;
+            opacity: 0.9;
+        }
+        
+        .cover-slide .date {
+            font-size: 24px;
+            opacity: 0.8;
+        }
+        
+        .checkmark {
+            color: #10B981;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">18</span>
+    </div>
+    
+    <div class="presentation-container">
+        <!-- 幻灯片1: 封面 -->
+        <div class="slide active cover-slide">
+            <h1>AI智能合同审核系统</h1>
+            <div class="subtitle">项目进度汇报</div>
+            <div class="date">2024年</div>
+        </div>
+        
+        <!-- 幻灯片2: 目录 -->
+        <div class="slide">
+            <h1>汇报内容</h1>
+            <ul style="font-size: 28px; line-height: 2.5;">
+                <li>项目概述</li>
+                <li>已完成模块</li>
+                <li>技术架构</li>
+                <li>核心功能展示</li>
+                <li>下一步计划</li>
+                <li>总结</li>
+            </ul>
+        </div>
+        
+        <!-- 幻灯片3: 项目概述 -->
+        <div class="slide">
+            <h1>项目概述</h1>
+            <div class="two-column">
+                <div class="column">
+                    <h3>项目信息</h3>
+                    <p><strong>项目名称：</strong>AI智能合同审核系统</p>
+                    <p><strong>项目类型：</strong>企业级Web应用</p>
+                    <p><strong>技术架构：</strong>前后端分离</p>
+                </div>
+                <div class="column">
+                    <h3>项目目标</h3>
+                    <ul>
+                        <li>提升合同审核效率</li>
+                        <li>降低合同风险</li>
+                        <li>规范合同管理流程</li>
+                        <li>积累审核知识经验</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片4: 技术架构 -->
+        <div class="slide">
+            <h1>技术架构</h1>
+            <div class="two-column">
+                <div class="column">
+                    <h3>后端技术栈</h3>
+                    <ul>
+                        <li>Django 5.0.1</li>
+                        <li>Django REST Framework</li>
+                        <li>Celery (异步任务)</li>
+                        <li>MySQL 8.0</li>
+                        <li>Redis</li>
+                        <li>JWT认证</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>前端技术栈</h3>
+                    <ul>
+                        <li>Vue 3</li>
+                        <li>Element Plus</li>
+                        <li>Vue Router</li>
+                        <li>Pinia</li>
+                        <li>ECharts</li>
+                        <li>Vite</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片5: 已完成模块概览 -->
+        <div class="slide">
+            <h1>已完成模块</h1>
+            <p style="text-align: center; font-size: 28px; margin-bottom: 40px; color: #10B981; font-weight: bold;">6个核心模块 100%完成</p>
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="module-icon">📊</div>
+                    <div class="module-title">数据库设计</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🏗️</div>
+                    <div class="module-title">基本框架搭建</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">👥</div>
+                    <div class="module-title">用户权限设置</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📝</div>
+                    <div class="module-title">日志记录</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📄</div>
+                    <div class="module-title">合同上传和修改</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">⚙️</div>
+                    <div class="module-title">审核规则的新建</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片6: 数据库设计 -->
+        <div class="slide">
+            <h1>数据库设计</h1>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0;">完成度：100%</h3>
+            </div>
+            <div class="two-column">
+                <div>
+                    <h3>核心特点</h3>
+                    <ul>
+                        <li>MySQL 8.0</li>
+                        <li>UTF8MB4字符集</li>
+                        <li>20+ 张数据表</li>
+                        <li>9个核心业务模块</li>
+                        <li>完整的表关系设计</li>
+                        <li>软删除机制</li>
+                        <li>索引优化</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>主要数据表</h3>
+                    <ul>
+                        <li>用户权限管理（7张表）</li>
+                        <li>合同管理（4张表）</li>
+                        <li>审核模块（4张表）</li>
+                        <li>规则引擎（2张表）</li>
+                        <li>其他模块（3+张表）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片7: 基本框架搭建 -->
+        <div class="slide">
+            <h1>基本框架搭建</h1>
+            <div class="two-column">
+                <div class="column">
+                    <h3>后端框架</h3>
+                    <ul>
+                        <li>Django项目初始化</li>
+                        <li>RESTful API架构</li>
+                        <li>JWT认证系统</li>
+                        <li>Celery异步任务</li>
+                        <li>Redis消息队列</li>
+                        <li>9个核心应用模块</li>
+                        <li>URL路由系统</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>前端框架</h3>
+                    <ul>
+                        <li>Vue 3项目初始化</li>
+                        <li>Element Plus UI组件</li>
+                        <li>Vue Router路由</li>
+                        <li>Pinia状态管理</li>
+                        <li>Axios HTTP客户端</li>
+                        <li>路由懒加载优化</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片8: 用户权限设置 -->
+        <div class="slide">
+            <h1>用户权限设置</h1>
+            <div class="two-column">
+                <div>
+                    <h3>用户认证系统</h3>
+                    <ul>
+                        <li>JWT Token认证</li>
+                        <li>用户名/邮箱登录</li>
+                        <li>登录状态持久化</li>
+                    </ul>
+                    <h3 style="margin-top: 30px;">用户管理功能</h3>
+                    <ul>
+                        <li>用户CRUD操作</li>
+                        <li>部门管理（层级结构）</li>
+                        <li>搜索、过滤、分页</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>角色权限管理（RBAC）</h3>
+                    <ul>
+                        <li>三种角色：管理员、审核员、起草人</li>
+                        <li>权限表、角色表、关联表</li>
+                        <li>前后端双重权限验证</li>
+                        <li>灵活的权限控制</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片9: 日志记录 -->
+        <div class="slide">
+            <h1>日志记录系统</h1>
+            <div class="two-column">
+                <div>
+                    <h3>审计日志表设计</h3>
+                    <ul>
+                        <li>记录用户、操作、资源信息</li>
+                        <li>IP地址、User Agent</li>
+                        <li>请求/响应数据（JSON格式）</li>
+                        <li>操作状态、错误信息</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>自动记录中间件</h3>
+                    <ul>
+                        <li>自动记录所有API请求</li>
+                        <li>无需手动调用</li>
+                        <li>异常处理机制</li>
+                    </ul>
+                    <h3 style="margin-top: 30px;">日志查询功能</h3>
+                    <ul>
+                        <li>按用户、操作类型、状态过滤</li>
+                        <li>分页查询</li>
+                        <li>仅管理员可访问</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片10: 合同上传和修改 -->
+        <div class="slide">
+            <h1>合同上传和修改</h1>
+            <div class="two-column">
+                <div>
+                    <h3>文件上传功能</h3>
+                    <ul>
+                        <li>支持Word文档（.doc, .docx）</li>
+                        <li>支持PDF文件（.pdf）</li>
+                        <li>文件大小限制：10MB</li>
+                        <li>自动文件类型验证</li>
+                    </ul>
+                    <h3 style="margin-top: 30px;">文件解析功能</h3>
+                    <ul>
+                        <li>使用python-docx解析Word</li>
+                        <li>使用pymupdf解析PDF</li>
+                        <li>自动提取文本和HTML格式</li>
+                        <li>提取文件元数据</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>合同管理功能</h3>
+                    <ul>
+                        <li>合同创建、修改、查询</li>
+                        <li>版本管理（自动递增）</li>
+                        <li>富文本编辑器（Quill）</li>
+                        <li>支持JSON和HTML两种格式</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片11: 审核规则的新建 -->
+        <div class="slide">
+            <h1>审核规则的新建</h1>
+            <div class="two-column">
+                <div>
+                    <h3>规则数据模型</h3>
+                    <ul>
+                        <li>规则编码、名称、类型</li>
+                        <li>适用行业、分类</li>
+                        <li>优先级、风险等级</li>
+                        <li>JSON格式规则内容</li>
+                    </ul>
+                    <h3 style="margin-top: 30px;">规则类型分类</h3>
+                    <ul>
+                        <li>通用规则（所有合同）</li>
+                        <li>行业规则（特定行业）</li>
+                        <li>企业规则（特定企业）</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>规则管理功能</h3>
+                    <ul>
+                        <li>规则CRUD操作</li>
+                        <li>搜索、过滤、分页</li>
+                        <li>规则匹配记录</li>
+                        <li>规则启用/禁用</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片12: 数据统计 -->
+        <div class="slide">
+            <h1>项目数据统计</h1>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">代码文件</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">30K+</div>
+                    <div class="stat-label">代码行数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">80+</div>
+                    <div class="stat-label">API端点</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">数据表</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">前端页面</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">完成模块</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片13: 技术亮点 -->
+        <div class="slide">
+            <h1>技术亮点</h1>
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="module-icon">🏛️</div>
+                    <div class="module-title">前后端分离架构</div>
+                    <p style="font-size: 16px; margin-top: 10px;">清晰的架构设计，易于维护和扩展</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">⚡</div>
+                    <div class="module-title">现代化技术栈</div>
+                    <p style="font-size: 16px; margin-top: 10px;">Vue 3 Composition API，Django 5.0</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🚀</div>
+                    <div class="module-title">性能优化</div>
+                    <p style="font-size: 16px; margin-top: 10px;">路由懒加载，代码分割</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🔒</div>
+                    <div class="module-title">安全性保障</div>
+                    <p style="font-size: 16px; margin-top: 10px;">JWT认证，RBAC权限控制</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片14: 下一步计划 -->
+        <div class="slide">
+            <h1>下一步计划</h1>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0;">完善合同审核功能</h3>
+                <p><strong>优先级：</strong>高</p>
+                <p><strong>计划时间：</strong>2-3周</p>
+            </div>
+            <div class="two-column">
+                <div>
+                    <h3>主要工作</h3>
+                    <ul>
+                        <li>审核任务管理完善</li>
+                        <li>审核流程完善</li>
+                        <li>审核意见管理</li>
+                        <li>审核规则集成</li>
+                        <li>AI模型集成（可选）</li>
+                        <li>前端界面优化</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>审核功能</h3>
+                    <ul>
+                        <li>自动审核（规则引擎+AI）</li>
+                        <li>人工审核（界面优化）</li>
+                        <li>审核报告自动生成</li>
+                        <li>审核意见闭环管理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片15: 审核功能详细计划 -->
+        <div class="slide">
+            <h1>审核功能详细计划</h1>
+            <div class="two-column">
+                <div>
+                    <h3>审核任务管理</h3>
+                    <ul>
+                        <li>任务创建、分配、转派</li>
+                        <li>状态管理、超时提醒</li>
+                    </ul>
+                    <h3 style="margin-top: 30px;">审核流程</h3>
+                    <ul>
+                        <li>自动审核（规则引擎+AI）</li>
+                        <li>人工审核（界面优化）</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>审核结果</h3>
+                    <ul>
+                        <li>审核报告自动生成</li>
+                        <li>报告模板设计</li>
+                    </ul>
+                    <h3 style="margin-top: 30px;">审核意见</h3>
+                    <ul>
+                        <li>意见录入、处理</li>
+                        <li>意见闭环管理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片16: 项目价值 -->
+        <div class="slide">
+            <h1>项目价值</h1>
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="module-icon">⚡</div>
+                    <div class="module-title">提升效率</div>
+                    <p style="font-size: 16px; margin-top: 10px;">自动化合同审核流程，减少人工审核时间</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🛡️</div>
+                    <div class="module-title">降低风险</div>
+                    <p style="font-size: 16px; margin-top: 10px;">智能风险识别，提前发现合同风险</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📋</div>
+                    <div class="module-title">规范管理</div>
+                    <p style="font-size: 16px; margin-top: 10px;">统一的合同管理平台，规范合同管理流程</p>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📚</div>
+                    <div class="module-title">知识积累</div>
+                    <p style="font-size: 16px; margin-top: 10px;">知识图谱和案例库，积累审核经验</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 幻灯片17: 项目总结 -->
+        <div class="slide">
+            <h1>项目总结</h1>
+            <div class="highlight-box">
+                <h3 style="margin-top: 0; color: #10B981;">✅ 已完成：6个核心基础模块全部完成</h3>
+                <ul style="margin-top: 15px;">
+                    <li><span class="checkmark">✓</span>数据库设计</li>
+                    <li><span class="checkmark">✓</span>基本框架搭建</li>
+                    <li><span class="checkmark">✓</span>用户权限设置</li>
+                    <li><span class="checkmark">✓</span>日志记录</li>
+                    <li><span class="checkmark">✓</span>合同上传和修改</li>
+                    <li><span class="checkmark">✓</span>审核规则的新建</li>
+                </ul>
+            </div>
+            <div style="margin-top: 30px;">
+                <h3>🎯 下一步：完善合同审核功能</h3>
+                <p style="font-size: 20px; margin-top: 15px;">这是系统的核心业务功能，将大大提升系统的实用价值</p>
+            </div>
+            <div style="margin-top: 30px;">
+                <h3>💪 项目优势</h3>
+                <ul>
+                    <li>技术架构合理</li>
+                    <li>代码质量良好</li>
+                    <li>为后续功能开发打下坚实基础</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 幻灯片18: 谢谢观看 -->
+        <div class="slide cover-slide">
+            <h1>谢谢观看</h1>
+            <div class="subtitle">欢迎提问与交流</div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="changeSlide(-1)">上一页</button>
+        <button class="nav-btn" id="next-btn" onclick="changeSlide(1)">下一页</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            if (n >= totalSlides) {
+                currentSlide = 0;
+            } else if (n < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = n;
+            }
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // 更新按钮状态
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+        
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+        
+        // 键盘导航
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                changeSlide(-1);
+            }
+        });
+        
+        // 初始化
+        showSlide(0);
+    </script>
+</body>
+</html>
