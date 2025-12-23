@@ -2,7 +2,7 @@
   <el-container class="layout-container">
     <el-aside width="250px" class="sidebar">
       <div class="logo">
-        <h2>AI合同审核</h2>
+        <h2>AI智能合同审核</h2>
       </div>
       <el-menu
         :default-active="activeMenu"
@@ -31,6 +31,10 @@
         <el-menu-item index="/rules">
           <el-icon><Setting /></el-icon>
           <span>规则引擎</span>
+        </el-menu-item>
+        <el-menu-item index="/rule-matches">
+          <el-icon><List /></el-icon>
+          <span>规则匹配记录</span>
         </el-menu-item>
         <el-menu-item index="/knowledge">
           <el-icon><Connection /></el-icon>
@@ -83,7 +87,7 @@ import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { ArrowDown, OfficeBuilding, DocumentCopy } from '@element-plus/icons-vue'
+import { ArrowDown, OfficeBuilding, DocumentCopy, List } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,6 +101,7 @@ const pageTitle = computed(() => {
     '/templates': '模板库',
     '/reviews': '合同审核',
     '/rules': '规则引擎',
+    '/rule-matches': '规则匹配记录',
     '/knowledge': '知识图谱',
     '/users': '用户管理',
     '/departments': '部门管理',

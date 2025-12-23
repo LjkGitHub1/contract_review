@@ -11,23 +11,44 @@
         </div>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="规则类型">
-          <el-select v-model="searchForm.rule_type" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.rule_type" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="通用规则" value="general" />
             <el-option label="行业规则" value="industry" />
             <el-option label="企业规则" value="enterprise" />
           </el-select>
         </el-form-item>
         <el-form-item label="风险等级">
-          <el-select v-model="searchForm.risk_level" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.risk_level" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="高风险" value="high" />
             <el-option label="中风险" value="medium" />
             <el-option label="低风险" value="low" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="searchForm.is_active" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.is_active" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="启用" :value="true" />
             <el-option label="禁用" :value="false" />
           </el-select>
@@ -105,7 +126,12 @@
           <el-input v-model="formData.rule_name" />
         </el-form-item>
         <el-form-item label="规则类型" prop="rule_type">
-          <el-select v-model="formData.rule_type" placeholder="请选择规则类型" style="width: 100%">
+          <el-select 
+            v-model="formData.rule_type" 
+            placeholder="请选择规则类型" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="通用规则" value="general" />
             <el-option label="行业规则" value="industry" />
             <el-option label="企业规则" value="enterprise" />
@@ -121,7 +147,12 @@
           <el-input-number v-model="formData.priority" :min="0" :max="100" />
         </el-form-item>
         <el-form-item label="风险等级" prop="risk_level">
-          <el-select v-model="formData.risk_level" placeholder="请选择风险等级" style="width: 100%">
+          <el-select 
+            v-model="formData.risk_level" 
+            placeholder="请选择风险等级" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="高风险" value="high" />
             <el-option label="中风险" value="medium" />
             <el-option label="低风险" value="low" />

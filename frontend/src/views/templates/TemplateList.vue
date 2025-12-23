@@ -11,9 +11,16 @@
         </div>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="合同类型">
-          <el-select v-model="searchForm.contract_type" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.contract_type" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="采购合同" value="procurement" />
             <el-option label="销售合同" value="sales" />
             <el-option label="劳动合同" value="labor" />
@@ -21,7 +28,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="是否公开">
-          <el-select v-model="searchForm.is_public" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.is_public" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="公开" :value="true" />
             <el-option label="私有" :value="false" />
           </el-select>
@@ -92,7 +106,12 @@
           <el-input v-model="formData.name" />
         </el-form-item>
         <el-form-item label="合同类型" prop="contract_type">
-          <el-select v-model="formData.contract_type" placeholder="请选择合同类型" style="width: 100%">
+          <el-select 
+            v-model="formData.contract_type" 
+            placeholder="请选择合同类型" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="采购合同" value="procurement" />
             <el-option label="销售合同" value="sales" />
             <el-option label="劳动合同" value="labor" />

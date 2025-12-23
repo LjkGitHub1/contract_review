@@ -39,7 +39,12 @@
           <el-input v-model="formData.title" />
         </el-form-item>
         <el-form-item label="合同类型" prop="contract_type">
-          <el-select v-model="formData.contract_type" placeholder="请选择合同类型" style="width: 100%">
+          <el-select 
+            v-model="formData.contract_type" 
+            placeholder="请选择合同类型" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="采购合同" value="procurement" />
             <el-option label="销售合同" value="sales" />
             <el-option label="劳动合同" value="labor" />
@@ -50,7 +55,12 @@
           <el-input v-model="formData.industry" placeholder="如：制造业、金融业等" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select v-model="formData.status" placeholder="请选择状态" style="width: 100%">
+          <el-select 
+            v-model="formData.status" 
+            placeholder="请选择状态" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="草稿" value="draft" />
             <el-option label="审核中" value="reviewing" />
             <el-option label="已审核" value="reviewed" />
@@ -64,20 +74,22 @@
             <el-radio label="json">JSON编辑</el-radio>
             <el-radio label="rich">富文本编辑</el-radio>
           </el-radio-group>
-          <el-input
-            v-if="contentEditMode === 'json'"
-            v-model="contentText"
-            type="textarea"
-            :rows="10"
-            placeholder='请输入JSON格式的合同内容'
-          />
-          <QuillEditor
-            v-else
-            v-model:content="richContent"
-            contentType="html"
-            theme="snow"
-            style="height: 300px; margin-bottom: 50px"
-          />
+          <div v-if="contentEditMode === 'json'" style="width: 100%">
+            <el-input
+              v-model="contentText"
+              type="textarea"
+              :rows="10"
+              placeholder='请输入JSON格式的合同内容'
+            />
+          </div>
+          <div v-else class="quill-editor-wrapper">
+            <QuillEditor
+              v-model:content="richContent"
+              contentType="html"
+              theme="snow"
+              style="height: 300px; margin-bottom: 50px"
+            />
+          </div>
         </el-form-item>
       </el-form>
 
@@ -318,6 +330,23 @@ onMounted(() => {
   font-family: 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.6;
+}
+
+.quill-editor-wrapper {
+  width: 100%;
+}
+
+.quill-editor-wrapper :deep(.ql-container) {
+  width: 100%;
+}
+
+.quill-editor-wrapper :deep(.ql-editor) {
+  width: 100%;
+  min-height: 300px;
+}
+
+.quill-editor-wrapper :deep(.ql-toolbar) {
+  width: 100%;
 }
 </style>
 

@@ -11,15 +11,29 @@
         </div>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="任务类型">
-          <el-select v-model="searchForm.task_type" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.task_type" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="自动审核" value="auto" />
             <el-option label="人工审核" value="manual" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="searchForm.status" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.status" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="待处理" value="pending" />
             <el-option label="处理中" value="processing" />
             <el-option label="已完成" value="completed" />
@@ -129,13 +143,23 @@
           </el-select>
         </el-form-item>
         <el-form-item label="任务类型" prop="task_type">
-          <el-select v-model="formData.task_type" placeholder="请选择任务类型" style="width: 100%">
+          <el-select 
+            v-model="formData.task_type" 
+            placeholder="请选择任务类型" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="自动审核" value="auto" />
             <el-option label="人工审核" value="manual" />
           </el-select>
         </el-form-item>
         <el-form-item label="优先级" prop="priority">
-          <el-select v-model="formData.priority" placeholder="请选择优先级" style="width: 100%">
+          <el-select 
+            v-model="formData.priority" 
+            placeholder="请选择优先级" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="高" value="high" />
             <el-option label="中" value="medium" />
             <el-option label="低" value="low" />
@@ -213,13 +237,39 @@ const getStatusText = (status) => {
   return texts[status] || status
 }
 
+// 将数字优先级转换为文本优先级
+const convertPriorityToText = (priority) => {
+  if (typeof priority === 'string') {
+    return priority // 如果已经是文本，直接返回
+  }
+  if (typeof priority === 'number') {
+    // 根据数字范围转换为文本
+    if (priority >= 70) return 'high'
+    if (priority >= 40) return 'medium'
+    return 'low'
+  }
+  return 'medium' // 默认值
+}
+
+// 将文本优先级转换为数字优先级
+const convertPriorityToNumber = (priority) => {
+  const mapping = {
+    high: 70,
+    medium: 50,
+    low: 30,
+  }
+  return mapping[priority] || 50
+}
+
 const getPriorityText = (priority) => {
+  // 如果是数字，先转换为文本
+  const textPriority = convertPriorityToText(priority)
   const texts = {
     high: '高',
     medium: '中',
     low: '低',
   }
-  return texts[priority] || priority
+  return texts[textPriority] || priority
 }
 
 const fetchReviews = async () => {
@@ -280,7 +330,7 @@ const handleEdit = (row) => {
     id: row.id,
     contract: row.contract,
     task_type: row.task_type,
-    priority: row.priority || 'medium',
+    priority: convertPriorityToText(row.priority) || 'medium',
   })
   dialogVisible.value = true
 }
@@ -340,11 +390,17 @@ const handleSubmit = async () => {
     if (valid) {
       submitting.value = true
       try {
+        // 准备提交数据，将优先级文本转换为数字
+        const submitData = {
+          ...formData,
+          priority: convertPriorityToNumber(formData.priority),
+        }
+        
         if (isEdit.value) {
-          await api.patch(`/reviews/tasks/${formData.id}/`, formData)
+          await api.patch(`/reviews/tasks/${formData.id}/`, submitData)
           ElMessage.success('更新成功')
         } else {
-          await api.post('/reviews/tasks/', formData)
+          await api.post('/reviews/tasks/', submitData)
           ElMessage.success('创建成功')
         }
         dialogVisible.value = false

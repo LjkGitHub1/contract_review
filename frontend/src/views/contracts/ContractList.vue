@@ -11,9 +11,16 @@
         </div>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="合同类型">
-          <el-select v-model="searchForm.contract_type" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.contract_type" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="采购合同" value="procurement" />
             <el-option label="销售合同" value="sales" />
             <el-option label="劳动合同" value="labor" />
@@ -21,7 +28,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="searchForm.status" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.status" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="草稿" value="draft" />
             <el-option label="审核中" value="reviewing" />
             <el-option label="已审核" value="reviewed" />

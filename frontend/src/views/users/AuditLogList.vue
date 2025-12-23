@@ -5,21 +5,46 @@
         <span>操作日志</span>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="操作类型">
-          <el-input v-model="searchForm.action" placeholder="请输入操作类型" clearable />
+          <el-input 
+            v-model="searchForm.action" 
+            placeholder="请输入操作类型" 
+            clearable 
+            @keyup.enter="handleSearch"
+            style="min-width: 180px"
+          />
         </el-form-item>
         <el-form-item label="资源类型">
-          <el-input v-model="searchForm.resource_type" placeholder="请输入资源类型" clearable />
+          <el-input 
+            v-model="searchForm.resource_type" 
+            placeholder="请输入资源类型" 
+            clearable 
+            @keyup.enter="handleSearch"
+            style="min-width: 180px"
+          />
         </el-form-item>
         <el-form-item label="操作状态">
-          <el-select v-model="searchForm.status" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.status" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="成功" value="success" />
             <el-option label="失败" value="failed" />
           </el-select>
         </el-form-item>
         <el-form-item label="用户">
-          <el-input v-model="searchForm.user" placeholder="请输入用户ID" clearable />
+          <el-input 
+            v-model="searchForm.user" 
+            placeholder="请输入用户ID" 
+            clearable 
+            @keyup.enter="handleSearch"
+            style="min-width: 180px"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>

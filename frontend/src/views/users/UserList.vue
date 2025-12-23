@@ -11,12 +11,25 @@
         </div>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="用户名">
-          <el-input v-model="searchForm.username" placeholder="请输入用户名" clearable />
+          <el-input 
+            v-model="searchForm.username" 
+            placeholder="请输入用户名" 
+            clearable 
+            @keyup.enter="handleSearch"
+            style="min-width: 180px"
+          />
         </el-form-item>
         <el-form-item label="角色">
-          <el-select v-model="searchForm.role" placeholder="请选择" clearable>
+          <el-select 
+            v-model="searchForm.role" 
+            placeholder="请选择" 
+            clearable 
+            filterable
+            style="min-width: 180px"
+            @change="handleSearch"
+          >
             <el-option label="管理员" value="admin" />
             <el-option label="审核员" value="reviewer" />
             <el-option label="起草人" value="drafter" />
@@ -103,7 +116,13 @@
           <el-input v-model="formData.phone" />
         </el-form-item>
         <el-form-item label="部门" prop="department">
-          <el-select v-model="formData.department" placeholder="请选择部门" clearable style="width: 100%">
+          <el-select 
+            v-model="formData.department" 
+            placeholder="请选择部门" 
+            clearable 
+            filterable
+            style="width: 100%"
+          >
             <el-option
               v-for="dept in departments"
               :key="dept.id"
@@ -113,7 +132,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="角色" prop="role">
-          <el-select v-model="formData.role" placeholder="请选择角色" style="width: 100%">
+          <el-select 
+            v-model="formData.role" 
+            placeholder="请选择角色" 
+            filterable
+            style="width: 100%"
+          >
             <el-option label="管理员" value="admin" />
             <el-option label="审核员" value="reviewer" />
             <el-option label="起草人" value="drafter" />
