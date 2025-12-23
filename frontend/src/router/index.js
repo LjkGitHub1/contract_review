@@ -56,6 +56,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "rules" */ '@/views/rules/RuleList.vue'),
       },
       {
+        path: 'rule-matches',
+        name: 'RuleMatches',
+        component: () => import(/* webpackChunkName: "rules" */ '@/views/rules/RuleMatchList.vue'),
+      },
+      {
         path: 'knowledge',
         name: 'Knowledge',
         component: () => import(/* webpackChunkName: "knowledge" */ '@/views/knowledge/KnowledgeGraph.vue'),

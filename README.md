@@ -156,8 +156,8 @@ npm run build
 ## API文档
 
 启动后端服务后，访问：
-- Django Admin: http://localhost:8000/admin/
-- API根路径: http://localhost:8000/api/
+- Django Admin: http://localhost:8897/admin/
+- API根路径: http://localhost:8897/api/
 
 ## 默认账号
 
