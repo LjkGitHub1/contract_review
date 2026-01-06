@@ -4,6 +4,7 @@ django-filter==24.1
 djangorestframework-simplejwt==5.3.1
 celery==5.4.0
 redis==5.0.6
+django-redis==5.4.0
 mysqlclient==2.2.4
 python-dotenv==1.0.1
 Pillow==10.3.0
@@ -11,4 +12,6 @@ django-cors-headers==4.4.0
 pymupdf==1.24.5
 python-docx==1.1.2
 openpyxl==3.1.5
+requests==2.31.0
+gunicorn==21.2.0
 

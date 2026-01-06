@@ -51,6 +51,18 @@ const routes = [
         component: () => import(/* webpackChunkName: "reviews" */ '@/views/reviews/ReviewDetail.vue'),
       },
       {
+        path: 'review-focus-config',
+        name: 'ReviewFocusConfig',
+        component: () => import(/* webpackChunkName: "reviews" */ '@/views/reviews/ReviewFocusConfig.vue'),
+        meta: { requiresAuth: true, roles: ['admin'] },
+      },
+      {
+        path: 'ai-model-config',
+        name: 'AIModelConfig',
+        component: () => import(/* webpackChunkName: "reviews" */ '@/views/reviews/AIModelConfig.vue'),
+        meta: { requiresAuth: true, roles: ['admin'] },
+      },
+      {
         path: 'rules',
         name: 'Rules',
         component: () => import(/* webpackChunkName: "rules" */ '@/views/rules/RuleList.vue'),
@@ -74,6 +86,18 @@ const routes = [
         path: 'audit-logs',
         name: 'AuditLogs',
         component: () => import(/* webpackChunkName: "users" */ '@/views/users/AuditLogList.vue'),
+      },
+      {
+        path: 'permission-config',
+        name: 'PermissionConfig',
+        component: () => import(/* webpackChunkName: "users" */ '@/views/users/PermissionConfig.vue'),
+        meta: { requiresAuth: true, roles: ['admin'] },
+      },
+      {
+        path: 'ai-chat',
+        name: 'AIChat',
+        component: () => import(/* webpackChunkName: "ai" */ '@/views/ai/ChatWindow.vue'),
+        meta: { requiresAuth: true },
       },
     ],
   },

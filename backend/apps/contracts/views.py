@@ -19,6 +19,7 @@ from .serializers import (
     ContractSerializer, ContractVersionSerializer,
     TemplateSerializer, UserHabitSerializer
 )
+from .services import ContractService
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -30,6 +31,15 @@ class ContractViewSet(viewsets.ModelViewSet):
     search_fields = ['title', 'contract_no']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-created_at']
+    
+    def get_queryset(self):
+        """优化查询：使用select_related减少数据库查询"""
+        queryset = Contract.objects.filter(is_deleted=False).select_related(
+            'drafter', 'template'
+        ).prefetch_related(
+            'versions', 'review_tasks'
+        )
+        return queryset
 
     def perform_create(self, serializer):
         # 自动生成合同编号
@@ -45,12 +55,18 @@ class ContractViewSet(viewsets.ModelViewSet):
         contract = self.get_object()
         new_version = contract.current_version + 1
         
+        # 获取变更摘要，如果没有提供则自动生成
+        change_summary = request.data.get('change_summary', '')
+        if not change_summary:
+            # 自动生成变更摘要
+            change_summary = f'编辑合同内容 - {timezone.now().strftime("%Y-%m-%d %H:%M")}'
+        
         version = ContractVersion.objects.create(
             contract=contract,
             version=new_version,
             content=request.data.get('content', contract.content),
             file_path=request.data.get('file_path', contract.file_path),
-            change_summary=request.data.get('change_summary', ''),
+            change_summary=change_summary,
             changed_by=request.user
         )
         
@@ -73,29 +89,85 @@ class ContractViewSet(viewsets.ModelViewSet):
         """回滚到指定版本"""
         contract = self.get_object()
         version_num = request.data.get('version')
+        rollback_reason = request.data.get('reason', '')
+        
+        if not version_num:
+            return Response({'error': '请指定要回滚的版本号'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             version = contract.versions.get(version=version_num, is_deleted=False)
+            
+            # 检查是否已经是当前版本
+            if contract.current_version == version_num:
+                return Response({'error': '该版本已经是当前版本，无需回滚'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 保存当前内容（在回滚前）
+            old_content = contract.content
+            old_file_path = contract.file_path
+            
+            # 恢复版本内容
             contract.content = version.content
             contract.file_path = version.file_path
             contract.save()
             
-            # 创建回滚版本
+            # 创建回滚版本记录
             new_version = contract.current_version + 1
+            change_summary = f'回滚到版本 {version_num}'
+            if rollback_reason:
+                change_summary += f' - {rollback_reason}'
+            else:
+                change_summary += f'（由 {request.user.username} 于 {timezone.now().strftime("%Y-%m-%d %H:%M:%S")} 执行）'
+            
             ContractVersion.objects.create(
                 contract=contract,
                 version=new_version,
                 content=version.content,
                 file_path=version.file_path,
-                change_summary=f'回滚到版本 {version_num}',
+                change_summary=change_summary,
                 changed_by=request.user
             )
             contract.current_version = new_version
             contract.save()
             
-            return Response({'message': f'已回滚到版本 {version_num}'})
+            return Response({
+                'message': f'已成功回滚到版本 {version_num}',
+                'new_version': new_version,
+                'rolled_back_to': version_num
+            })
         except ContractVersion.DoesNotExist:
-            return Response({'error': '版本不存在'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': f'版本 {version_num} 不存在'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': f'回滚失败: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=False, methods=['post'])
+    def generate_content(self, request):
+        """使用AI生成合同初步内容"""
+        contract_type = request.data.get('contract_type')
+        industry = request.data.get('industry', '')
+        template_id = request.data.get('template_id')
+        basic_info = request.data.get('basic_info', {})
+        
+        if not contract_type:
+            return Response({'error': '合同类型不能为空'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 获取模板（如果提供）
+        template = None
+        if template_id:
+            try:
+                template = Template.objects.get(id=template_id, is_deleted=False)
+            except Template.DoesNotExist:
+                return Response({'error': '模板不存在'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 调用服务生成合同内容
+        contract_service = ContractService()
+        result = contract_service.generate_contract_content(
+            contract_type=contract_type,
+            industry=industry,
+            template=template,
+            basic_info=basic_info
+        )
+        
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class TemplateViewSet(viewsets.ModelViewSet):

@@ -4,7 +4,7 @@ import router from '@/router'
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 30000,
+  timeout: 30000, // 默认30秒，对于AI生成等长时间操作，需要在请求时单独设置
 })
 
 // 请求拦截器
@@ -33,7 +33,11 @@ api.interceptors.response.use(
         router.push('/login')
         ElMessage.error('登录已过期，请重新登录')
       } else {
-        ElMessage.error(error.response.data.detail || '请求失败')
+        const errorMsg = error.response.data.detail || 
+                        error.response.data.error || 
+                        error.response.data.message ||
+                        '请求失败'
+        ElMessage.error(errorMsg)
       }
     } else {
       ElMessage.error('网络错误，请稍后重试')

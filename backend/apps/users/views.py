@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils import timezone
 
-from .models import User, Department, Role, Permission, AuditLog
+from .models import User, Department, Role, Permission, AuditLog, UserRole
 from .serializers import (
     UserSerializer, UserCreateSerializer, DepartmentSerializer,
     RoleSerializer, PermissionSerializer, AuditLogSerializer
@@ -50,13 +50,54 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
+    @action(detail=True, methods=['post'])
+    def assign_roles(self, request, pk=None):
+        """为用户分配角色"""
+        user = self.get_object()
+        role_ids = request.data.get('role_ids', [])
+        
+        # 清除现有角色
+        UserRole.objects.filter(user=user).delete()
+        
+        # 添加新角色
+        for role_id in role_ids:
+            try:
+                role = Role.objects.get(id=role_id)
+                UserRole.objects.get_or_create(user=user, role=role)
+            except Role.DoesNotExist:
+                pass
+        
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
 
 class RoleViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.filter(is_deleted=False)
+    queryset = Role.objects.filter(is_deleted=False).prefetch_related('permissions')
     serializer_class = RoleSerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name', 'code']
+
+    @action(detail=True, methods=['post'])
+    def assign_permissions(self, request, pk=None):
+        """为角色分配权限"""
+        role = self.get_object()
+        permission_ids = request.data.get('permission_ids', [])
+        
+        # 清除现有权限
+        from .models import RolePermission
+        RolePermission.objects.filter(role=role).delete()
+        
+        # 添加新权限
+        for perm_id in permission_ids:
+            try:
+                permission = Permission.objects.get(id=perm_id)
+                RolePermission.objects.get_or_create(role=role, permission=permission)
+            except Permission.DoesNotExist:
+                pass
+        
+        serializer = self.get_serializer(role)
+        return Response(serializer.data)
 
 
 class PermissionViewSet(viewsets.ModelViewSet):

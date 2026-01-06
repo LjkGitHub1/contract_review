@@ -4,10 +4,19 @@
       <template #header>
         <div class="card-header">
           <span>部门列表</span>
-          <el-button type="primary" @click="handleCreate">
-            <el-icon><Plus /></el-icon>
-            新建部门
-          </el-button>
+          <div style="display: flex; gap: 10px">
+            <el-button
+              type="danger"
+              :disabled="selectedDepartments.length === 0"
+              @click="handleBatchDelete"
+            >
+              批量删除 ({{ selectedDepartments.length }})
+            </el-button>
+            <el-button type="primary" @click="handleCreate">
+              <el-icon><Plus /></el-icon>
+              新建部门
+            </el-button>
+          </div>
         </div>
       </template>
 
@@ -24,7 +33,13 @@
         </el-form-item>
       </el-form>
 
-      <el-table :data="departments" v-loading="loading" style="width: 100%">
+      <el-table
+        :data="departments"
+        v-loading="loading"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="code" label="部门编码" width="150" />
         <el-table-column prop="name" label="部门名称" />
         <el-table-column prop="parent_name" label="父部门" width="150">
@@ -120,6 +135,7 @@ const allDepartments = ref([]) // 用于查找父部门名称
 const dialogVisible = ref(false)
 const isEdit = ref(false)
 const formRef = ref(null)
+const selectedDepartments = ref([])
 
 const searchForm = reactive({
   name: '',
@@ -228,6 +244,10 @@ const handleEdit = (row) => {
   dialogVisible.value = true
 }
 
+const handleSelectionChange = (selection) => {
+  selectedDepartments.value = selection
+}
+
 const handleDelete = async (row) => {
   try {
     await ElMessageBox.confirm('确定要删除该部门吗？删除后该部门下的用户将无法关联到此部门。', '提示', {
@@ -240,6 +260,55 @@ const handleDelete = async (row) => {
     if (error !== 'cancel') {
       ElMessage.error('删除失败')
     }
+  }
+}
+
+const handleBatchDelete = async () => {
+  if (selectedDepartments.value.length === 0) {
+    ElMessage.warning('请选择要删除的部门')
+    return
+  }
+  
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除选中的 ${selectedDepartments.value.length} 个部门吗？删除后这些部门下的用户将无法关联到这些部门。`,
+      '批量删除',
+      {
+        type: 'warning',
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+      }
+    )
+    
+    loading.value = true
+    let successCount = 0
+    let failCount = 0
+    
+    for (const dept of selectedDepartments.value) {
+      try {
+        await api.delete(`/users/departments/${dept.id}/`)
+        successCount++
+      } catch (error) {
+        failCount++
+        console.error(`删除部门 ${dept.name} 失败:`, error)
+      }
+    }
+    
+    if (failCount === 0) {
+      ElMessage.success(`成功删除 ${successCount} 个部门`)
+    } else {
+      ElMessage.warning(`成功删除 ${successCount} 个部门，失败 ${failCount} 个`)
+    }
+    
+    selectedDepartments.value = []
+    await fetchAllDepartments()
+    fetchDepartments()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('批量删除失败')
+    }
+  } finally {
+    loading.value = false
   }
 }
 

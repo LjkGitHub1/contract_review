@@ -1,0 +1,37 @@
+# 开发环境Docker Compose配置
+# 使用方式: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+version: '3.8'
+
+services:
+  backend:
+    # 开发环境使用Django开发服务器
+    command: python manage.py runserver 0.0.0.0:8000
+    # 挂载代码目录以便热重载
+    volumes:
+      - ./backend:/app
+      - backend_media:/app/media
+      - backend_static:/app/staticfiles
+      - backend_logs:/app/logs
+    # 开发环境不限制资源
+
+  celery:
+    # 开发环境使用较少并发
+    command: celery -A config worker --loglevel=debug --concurrency=2
+    volumes:
+      - ./backend:/app
+      - backend_logs:/app/logs
+
+  frontend:
+    # 开发环境可以挂载源代码（如果需要）
+    # volumes:
+    #   - ./frontend:/app
+    #   - /app/node_modules
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    # 或者直接使用Vite开发服务器
+    # command: npm run dev -- --host 0.0.0.0
+    # ports:
+    #   - "5173:5173"
+

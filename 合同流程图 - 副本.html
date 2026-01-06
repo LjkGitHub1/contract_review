@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同起草与审核流程图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 40px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #3b82f6;
+            margin: 40px 0 20px 0;
+            font-size: 22px;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+
+        .diagram-container {
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .legend-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            border: 1px solid #333;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI智能合同审核系统 - 流程图</h1>
+
+        <!-- 合同起草流程图 -->
+        <h2>一、合同起草流程图</h2>
+        <div class="diagram-container">
+            <svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+                <!-- 定义箭头标记 -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                    </marker>
+                </defs>
+
+                <!-- 开始 -->
+                <rect x="450" y="20" width="100" height="50" rx="5" fill="#10b981" stroke="#333" stroke-width="2"/>
+                <text x="500" y="50" text-anchor="middle" fill="white" font-size="14" font-weight="bold">开始</text>
+
+                <!-- 选择模板 -->
+                <rect x="400" y="100" width="200" height="50" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="500" y="130" text-anchor="middle" fill="white" font-size="13">选择模板（可选）</text>
+
+                <!-- 填写基本信息 -->
+                <rect x="400" y="180" width="200" height="50" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="500" y="210" text-anchor="middle" fill="white" font-size="13">填写基本信息</text>
+
+                <!-- 判断：上传文件或手动输入 -->
+                <polygon points="450,260 550,260 550,300 450,300" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="500" y="285" text-anchor="middle" fill="white" font-size="12" font-weight="bold">上传文件？</text>
+
+                <!-- 上传文件 -->
+                <rect x="200" y="340" width="150" height="50" rx="5" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+                <text x="275" y="370" text-anchor="middle" fill="white" font-size="12">上传文件</text>
+                <text x="275" y="385" text-anchor="middle" fill="white" font-size="11">(Word/PDF)</text>
+
+                <!-- 文件解析 -->
+                <rect x="200" y="420" width="150" height="50" rx="5" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+                <text x="275" y="450" text-anchor="middle" fill="white" font-size="12">文件解析</text>
+
+                <!-- 手动输入 -->
+                <rect x="650" y="340" width="150" height="50" rx="5" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+                <text x="725" y="370" text-anchor="middle" fill="white" font-size="12">手动输入</text>
+                <text x="725" y="385" text-anchor="middle" fill="white" font-size="11">合同内容</text>
+
+                <!-- 编辑合同内容 -->
+                <rect x="400" y="500" width="200" height="50" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="500" y="530" text-anchor="middle" fill="white" font-size="13">编辑合同内容</text>
+
+                <!-- 保存草稿 -->
+                <rect x="400" y="580" width="200" height="50" rx="5" fill="#6366f1" stroke="#333" stroke-width="2"/>
+                <text x="500" y="610" text-anchor="middle" fill="white" font-size="13">保存草稿</text>
+
+                <!-- 判断：提交审核 -->
+                <polygon points="450,660 550,660 550,700 450,700" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="500" y="685" text-anchor="middle" fill="white" font-size="12" font-weight="bold">提交审核？</text>
+
+                <!-- 提交审核 -->
+                <rect x="400" y="740" width="200" height="50" rx="5" fill="#ef4444" stroke="#333" stroke-width="2"/>
+                <text x="500" y="770" text-anchor="middle" fill="white" font-size="13">提交审核</text>
+
+                <!-- 结束 -->
+                <rect x="450" y="820" width="100" height="50" rx="5" fill="#10b981" stroke="#333" stroke-width="2"/>
+                <text x="500" y="850" text-anchor="middle" fill="white" font-size="14" font-weight="bold">结束</text>
+
+                <!-- 连接线 -->
+                <line x1="500" y1="70" x2="500" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="500" y1="150" x2="500" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="500" y1="230" x2="500" y2="260" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <!-- 判断分支 -->
+                <line x1="450" y1="280" x2="275" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="350" y="310" fill="#333" font-size="11">是</text>
+                
+                <line x1="550" y1="280" x2="725" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="640" y="310" fill="#333" font-size="11">否</text>
+
+                <line x1="275" y1="390" x2="400" y2="500" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="725" y1="390" x2="500" y2="500" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <line x1="500" y1="550" x2="500" y2="580" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="500" y1="630" x2="500" y2="660" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <line x1="500" y1="700" x2="500" y2="740" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="500" y1="790" x2="500" y2="820" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                <!-- 返回编辑的虚线 -->
+                <line x1="450" y1="680" x2="200" y2="680" stroke="#999" stroke-width="1" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+                <line x1="200" y1="680" x2="200" y2="500" stroke="#999" stroke-width="1" stroke-dasharray="5,5"/>
+                <text x="220" y="675" fill="#666" font-size="10">继续编辑</text>
+            </svg>
+        </div>
+
+        <div class="legend">
+            <strong>图例说明：</strong>
+            <span class="legend-item"><span class="legend-box" style="background: #10b981;"></span>开始/结束</span>
+            <span class="legend-item"><span class="legend-box" style="background: #3b82f6;"></span>处理步骤</span>
+            <span class="legend-item"><span class="legend-box" style="background: #f59e0b;"></span>判断节点</span>
+            <span class="legend-item"><span class="legend-box" style="background: #8b5cf6;"></span>可选操作</span>
+            <span class="legend-item"><span class="legend-box" style="background: #6366f1;"></span>保存操作</span>
+            <span class="legend-item"><span class="legend-box" style="background: #ef4444;"></span>提交操作</span>
+        </div>
+
+        <!-- 合同审核流程图 -->
+        <h2>二、合同审核流程图（严格按照需求文档）</h2>
+        <div class="diagram-container">
+            <svg width="1600" height="1600" xmlns="http://www.w3.org/2000/svg">
+                <!-- 定义箭头标记 -->
+                <defs>
+                    <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                    </marker>
+                </defs>
+
+                <!-- 开始 -->
+                <rect x="750" y="20" width="100" height="50" rx="5" fill="#10b981" stroke="#333" stroke-width="2"/>
+                <text x="800" y="50" text-anchor="middle" fill="white" font-size="14" font-weight="bold">开始</text>
+
+                <!-- 提交合同到质检中心 -->
+                <rect x="700" y="100" width="200" height="50" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="800" y="130" text-anchor="middle" fill="white" font-size="13">提交合同到质检中心</text>
+
+                <!-- 上传多格式文件 -->
+                <rect x="700" y="180" width="200" height="60" rx="5" fill="#6366f1" stroke="#333" stroke-width="2"/>
+                <text x="800" y="205" text-anchor="middle" fill="white" font-size="12">上传多格式文件</text>
+                <text x="800" y="225" text-anchor="middle" fill="white" font-size="10">Word/PDF/TXT/扫描件/图片</text>
+
+                <!-- 质检中心处理 -->
+                <rect x="700" y="260" width="200" height="50" rx="5" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+                <text x="800" y="290" text-anchor="middle" fill="white" font-size="13" font-weight="bold">质检中心处理</text>
+
+                <!-- 规则引擎扫描 -->
+                <rect x="150" y="340" width="180" height="50" rx="5" fill="#6366f1" stroke="#333" stroke-width="2"/>
+                <text x="240" y="370" text-anchor="middle" fill="white" font-size="12">规则引擎扫描</text>
+
+                <!-- 大模型语义理解 -->
+                <rect x="150" y="420" width="180" height="50" rx="5" fill="#ec4899" stroke="#333" stroke-width="2"/>
+                <text x="240" y="450" text-anchor="middle" fill="white" font-size="12">大模型语义理解</text>
+
+                <!-- 扫描关键条款 -->
+                <rect x="150" y="500" width="180" height="60" rx="5" fill="#ec4899" stroke="#333" stroke-width="2"/>
+                <text x="240" y="525" text-anchor="middle" fill="white" font-size="12">扫描关键条款</text>
+                <text x="240" y="545" text-anchor="middle" fill="white" font-size="10">标的物/违约责任等</text>
+
+                <!-- 风险算法分析 -->
+                <rect x="150" y="580" width="180" height="50" rx="5" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="240" y="610" text-anchor="middle" fill="white" font-size="12">风险算法分析</text>
+
+                <!-- 逐条扫描对比评分 -->
+                <rect x="150" y="660" width="180" height="60" rx="5" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="240" y="685" text-anchor="middle" fill="white" font-size="12">逐条扫描对比评分</text>
+                <text x="240" y="705" text-anchor="middle" fill="white" font-size="10">与规则库对比</text>
+
+                <!-- 输出修改建议 -->
+                <rect x="150" y="740" width="180" height="50" rx="5" fill="#ef4444" stroke="#333" stroke-width="2"/>
+                <text x="240" y="770" text-anchor="middle" fill="white" font-size="12">输出可执行修改建议</text>
+
+                <!-- 生成审核报告 -->
+                <rect x="700" y="840" width="200" height="60" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="800" y="865" text-anchor="middle" fill="white" font-size="13">生成审核报告</text>
+                <text x="800" y="885" text-anchor="middle" fill="white" font-size="11">合同信息/风险概览/修改建议/法律依据</text>
+
+                <!-- 导出报告 -->
+                <rect x="700" y="920" width="200" height="50" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="800" y="950" text-anchor="middle" fill="white" font-size="13">导出报告</text>
+                <text x="800" y="965" text-anchor="middle" fill="white" font-size="11">Word/PDF格式</text>
+
+                <!-- 多级人工审核 -->
+                <rect x="700" y="1000" width="200" height="50" rx="5" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+                <text x="800" y="1030" text-anchor="middle" fill="white" font-size="13" font-weight="bold">多级人工审核</text>
+
+                <!-- 一级审核员审核 -->
+                <rect x="150" y="1080" width="200" height="70" rx="5" fill="#6366f1" stroke="#333" stroke-width="2"/>
+                <text x="250" y="1105" text-anchor="middle" fill="white" font-size="13" font-weight="bold">一级审核员审核</text>
+                <text x="250" y="1125" text-anchor="middle" fill="white" font-size="10">重点：格式规范、基础条款</text>
+                <text x="250" y="1140" text-anchor="middle" fill="white" font-size="10">完整性、基本信息准确性</text>
+
+                <!-- 判断：一级审核是否通过 -->
+                <polygon points="150,1170 250,1170 250,1210 150,1210" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="200" y="1195" text-anchor="middle" fill="white" font-size="11" font-weight="bold">一级审核通过？</text>
+
+                <!-- 二级审核员审核 -->
+                <rect x="150" y="1240" width="200" height="70" rx="5" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+                <text x="250" y="1265" text-anchor="middle" fill="white" font-size="13" font-weight="bold">二级审核员审核</text>
+                <text x="250" y="1285" text-anchor="middle" fill="white" font-size="10">重点：法律合规性、风险识别</text>
+                <text x="250" y="1300" text-anchor="middle" fill="white" font-size="10">条款合理性、权利义务平衡</text>
+
+                <!-- 判断：二级审核是否通过 -->
+                <polygon points="150,1330 250,1330 250,1370 150,1370" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="200" y="1355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">二级审核通过？</text>
+
+                <!-- 三级审核员审核（高级） -->
+                <rect x="150" y="1400" width="200" height="70" rx="5" fill="#ec4899" stroke="#333" stroke-width="2"/>
+                <text x="250" y="1425" text-anchor="middle" fill="white" font-size="13" font-weight="bold">三级审核员审核（高级）</text>
+                <text x="250" y="1445" text-anchor="middle" fill="white" font-size="10">重点：重大风险、战略层面</text>
+                <text x="250" y="1460" text-anchor="middle" fill="white" font-size="10">商业决策、最终批准</text>
+
+                <!-- 审核意见闭环 -->
+                <rect x="700" y="1080" width="200" height="50" rx="5" fill="#10b981" stroke="#333" stroke-width="2"/>
+                <text x="800" y="1110" text-anchor="middle" fill="white" font-size="13" font-weight="bold">审核意见闭环</text>
+
+                <!-- 自动汇总审核意见 -->
+                <rect x="1070" y="1080" width="200" height="50" rx="5" fill="#6366f1" stroke="#333" stroke-width="2"/>
+                <text x="1170" y="1110" text-anchor="middle" fill="white" font-size="12">自动汇总各层级审核意见</text>
+
+                <!-- 生成意见汇总表 -->
+                <rect x="1070" y="1160" width="200" height="50" rx="5" fill="#6366f1" stroke="#333" stroke-width="2"/>
+                <text x="1170" y="1190" text-anchor="middle" fill="white" font-size="12">生成审核意见汇总表</text>
+
+                <!-- 反馈给起草人 -->
+                <rect x="700" y="1160" width="200" height="50" rx="5" fill="#10b981" stroke="#333" stroke-width="2"/>
+                <text x="800" y="1190" text-anchor="middle" fill="white" font-size="13">反馈给合同起草人</text>
+
+                <!-- 起草人修改合同 -->
+                <rect x="700" y="1240" width="200" height="50" rx="5" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="800" y="1270" text-anchor="middle" fill="white" font-size="13">起草人修改合同</text>
+
+                <!-- 判断：是否重新提交 -->
+                <polygon points="700,1320 800,1320 800,1360 700,1360" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+                <text x="750" y="1345" text-anchor="middle" fill="white" font-size="12" font-weight="bold">重新提交？</text>
+
+                <!-- 重新提交审核 -->
+                <rect x="700" y="1380" width="200" height="50" rx="5" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+                <text x="800" y="1410" text-anchor="middle" fill="white" font-size="13">重新提交审核</text>
+
+                <!-- 结束 -->
+                <rect x="750" y="1460" width="100" height="50" rx="5" fill="#10b981" stroke="#333" stroke-width="2"/>
+                <text x="800" y="1490" text-anchor="middle" fill="white" font-size="14" font-weight="bold">结束</text>
+
+                <!-- 连接线 -->
+                <line x1="800" y1="70" x2="800" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="800" y1="150" x2="800" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="800" y1="240" x2="800" y2="260" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                
+                <!-- 质检中心处理分支 -->
+                <line x1="700" y1="285" x2="240" y2="340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="470" y="315" fill="#333" font-size="11">质检中心处理</text>
+
+                <!-- 质检中心处理流程 -->
+                <line x1="240" y1="390" x2="240" y2="420" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="240" y1="470" x2="240" y2="500" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="240" y1="560" x2="240" y2="580" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="240" y1="630" x2="240" y2="660" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="240" y1="720" x2="240" y2="740" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="240" y1="790" x2="700" y2="840" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                <!-- 生成报告流程 -->
+                <line x1="800" y1="900" x2="800" y2="920" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="800" y1="970" x2="800" y2="1000" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                <!-- 多级审核流程 -->
+                <line x1="800" y1="1050" x2="250" y2="1080" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="520" y="1065" fill="#333" font-size="11">分配审核任务</text>
+                
+                <!-- 一级审核流程 -->
+                <line x1="250" y1="1150" x2="200" y2="1170" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="200" y1="1210" x2="250" y2="1240" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="100" y="1190" fill="#333" font-size="10">通过</text>
+                
+                <!-- 二级审核流程 -->
+                <line x1="250" y1="1310" x2="200" y2="1330" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="200" y1="1370" x2="250" y2="1400" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="100" y="1350" fill="#333" font-size="10">通过</text>
+                
+                <!-- 三级审核完成后合并 -->
+                <line x1="250" y1="1470" x2="700" y2="1080" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="470" y="1275" fill="#333" font-size="11">审核完成</text>
+                
+                <!-- 不通过分支 -->
+                <line x1="150" y1="1190" x2="700" y2="1080" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead2)"/>
+                <text x="400" y="1135" fill="#ef4444" font-size="10" font-weight="bold">不通过</text>
+                
+                <line x1="150" y1="1350" x2="700" y2="1080" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead2)"/>
+                <text x="400" y="1215" fill="#ef4444" font-size="10" font-weight="bold">不通过</text>
+
+                <!-- 审核意见闭环流程 -->
+                <line x1="800" y1="1130" x2="1170" y2="1080" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="985" y="1105" fill="#333" font-size="11">汇总意见</text>
+                
+                <line x1="1170" y1="1130" x2="1170" y2="1160" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="1170" y1="1210" x2="800" y2="1160" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                
+                <line x1="800" y1="1210" x2="800" y2="1240" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <line x1="800" y1="1290" x2="800" y2="1320" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                <!-- 判断分支 -->
+                <line x1="750" y1="1360" x2="800" y2="1380" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="775" y="1375" fill="#333" font-size="11">是</text>
+                
+                <!-- 闭环反馈线 -->
+                <line x1="700" y1="1340" x2="700" y2="840" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead2)"/>
+                <text x="680" y="1090" fill="#10b981" font-size="10" font-weight="bold">闭环反馈</text>
+
+                <line x1="800" y1="1430" x2="800" y2="1460" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+
+                <!-- 异步处理标注 -->
+                <text x="50" y="600" fill="#666" font-size="10" font-style="italic">(Celery异步任务)</text>
+                <line x1="50" y1="590" x2="150" y2="605" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+            </svg>
+        </div>
+
+        <div class="legend">
+            <strong>图例说明：</strong>
+            <span class="legend-item"><span class="legend-box" style="background: #10b981;"></span>开始/结束</span>
+            <span class="legend-item"><span class="legend-box" style="background: #3b82f6;"></span>处理步骤</span>
+            <span class="legend-item"><span class="legend-box" style="background: #f59e0b;"></span>判断节点/风险识别</span>
+            <span class="legend-item"><span class="legend-box" style="background: #8b5cf6;"></span>审核类型</span>
+            <span class="legend-item"><span class="legend-box" style="background: #6366f1;"></span>审核处理</span>
+            <span class="legend-item"><span class="legend-box" style="background: #ec4899;"></span>AI识别</span>
+            <span class="legend-item"><span class="legend-box" style="background: #ef4444;"></span>风险分级/状态更新</span>
+            <span class="legend-item"><span class="legend-box" style="background: #dc2626;"></span>风险预警</span>
+        </div>
+
+        <!-- 流程说明 -->
+        <div style="margin-top: 40px; padding: 20px; background: #f9fafb; border-radius: 8px;">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px;">流程说明</h3>
+            
+            <h4 style="color: #3b82f6; margin-top: 20px; margin-bottom: 10px;">合同起草流程：</h4>
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li><strong>选择模板（可选）：</strong>用户可以选择使用已有模板，也可以从头开始创建</li>
+                <li><strong>填写基本信息：</strong>包括合同标题、类型、行业等基本信息</li>
+                <li><strong>上传文件或手动输入：</strong>支持上传Word/PDF文件自动解析，或手动输入合同内容</li>
+                <li><strong>编辑合同内容：</strong>使用富文本编辑器或JSON格式编辑合同内容</li>
+                <li><strong>保存草稿：</strong>可以多次保存草稿，状态为"草稿"</li>
+                <li><strong>提交审核：</strong>确认无误后提交审核，合同状态变为"审核中"</li>
+            </ol>
+
+            <h4 style="color: #3b82f6; margin-top: 20px; margin-bottom: 10px;">合同审核流程（严格按照需求文档）：</h4>
+            
+            <h5 style="color: #8b5cf6; margin-top: 15px; margin-bottom: 10px;">(1) 自动审核功能：</h5>
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li><strong>提交合同到质检中心：</strong>在合同定稿或签署前，提交到智能合同审核系统的"质检中心"</li>
+                <li><strong>上传多格式文件：</strong>支持上传Word、PDF、TXT、扫描件、图片等多种格式文件</li>
+                <li><strong>质检中心处理：</strong>使用规则引擎、大模型语义理解、风险算法进行审核</li>
+                <li><strong>规则引擎扫描：</strong>使用预设规则库进行规则匹配</li>
+                <li><strong>大模型语义理解：</strong>使用大语言模型进行语义分析和理解</li>
+                <li><strong>扫描关键条款：</strong>使用大模型扫描关键条款（如标的物、违约责任等）</li>
+                <li><strong>风险算法分析：</strong>使用风险算法进行风险识别和分析</li>
+                <li><strong>逐条扫描对比评分：</strong>逐条扫描合同条款，与规则库对比，进行评分</li>
+                <li><strong>输出可执行修改建议：</strong>输出可执行的修改建议</li>
+                <li><strong>生成审核报告：</strong>自动生成报告，包含：
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>合同信息</li>
+                        <li>风险概览</li>
+                        <li>修改建议</li>
+                        <li>法律依据</li>
+                    </ul>
+                </li>
+                <li><strong>导出报告：</strong>支持导出Word和PDF格式的报告</li>
+            </ol>
+
+            <h5 style="color: #8b5cf6; margin-top: 15px; margin-bottom: 10px;">(2) 多级人工审核（不同层级审核重点不同）：</h5>
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li><strong>一级审核员审核：</strong>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><strong>审核重点：</strong>格式规范、基础条款完整性、基本信息准确性</li>
+                        <li><strong>关注内容：</strong>合同格式、条款编号、基本信息填写、基础条款是否完整</li>
+                        <li><strong>审核标准：</strong>是否符合合同格式要求，基础信息是否准确完整</li>
+                    </ul>
+                </li>
+                <li><strong>二级审核员审核：</strong>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><strong>审核重点：</strong>法律合规性、风险识别、条款合理性、权利义务平衡</li>
+                        <li><strong>关注内容：</strong>合同条款是否符合法律法规，是否存在法律风险，条款是否合理，双方权利义务是否平衡</li>
+                        <li><strong>审核标准：</strong>法律合规性、风险等级评估、条款合理性分析</li>
+                    </ul>
+                </li>
+                <li><strong>三级审核员审核（高级审核员）：</strong>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><strong>审核重点：</strong>重大风险、战略层面、商业决策、最终批准</li>
+                        <li><strong>关注内容：</strong>重大风险点、战略影响、商业价值、最终决策</li>
+                        <li><strong>审核标准：</strong>重大风险是否可控，是否符合企业战略，是否批准签署</li>
+                    </ul>
+                </li>
+                <li><strong>审核流程：</strong>一级审核通过后进入二级审核，二级审核通过后进入三级审核，任何一级不通过则返回修改</li>
+            </ol>
+
+            <h5 style="color: #8b5cf6; margin-top: 15px; margin-bottom: 10px;">(3) 审核意见闭环：</h5>
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li><strong>自动汇总各层级审核意见：</strong>系统自动汇总来自不同层级审核员的审核意见</li>
+                <li><strong>生成审核意见汇总表：</strong>生成最终的审核意见汇总表，包含各层级的审核意见</li>
+                <li><strong>反馈给合同起草人：</strong>将审核意见汇总表反馈给合同起草人</li>
+                <li><strong>起草人修改合同：</strong>起草人根据各层级审核意见修改合同</li>
+                <li><strong>重新提交审核：</strong>修改完成后重新提交审核，形成"提交→审核→反馈→修订"闭环</li>
+            </ol>
+
+            <h5 style="color: #8b5cf6; margin-top: 15px; margin-bottom: 10px;">(4) 质检中心核心功能：</h5>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li><strong>时机：</strong>在合同定稿或签署前进行质检</li>
+                <li><strong>技术手段：</strong>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>规则引擎：使用预设规则进行匹配检查</li>
+                        <li>大模型语义理解：使用AI大模型进行语义分析和理解</li>
+                        <li>风险算法：使用风险识别算法进行风险分析</li>
+                    </ul>
+                </li>
+                <li><strong>处理方式：</strong>逐条扫描、对比、评分</li>
+                <li><strong>输出结果：</strong>可执行的修改建议</li>
+                <li><strong>闭环流程：</strong>提交→审核→反馈→修订</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+

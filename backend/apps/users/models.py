@@ -60,6 +60,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.URLField(max_length=500, blank=True, verbose_name='头像URL')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='部门')
     role = models.CharField(max_length=50, choices=ROLE_CHOICES, default='drafter', verbose_name='角色')
+    reviewer_level = models.CharField(
+        max_length=20,
+        choices=[
+            ('level1', '一级审核员'),
+            ('level2', '二级审核员'),
+            ('level3', '三级审核员（高级）'),
+        ],
+        null=True,
+        blank=True,
+        verbose_name='审核员层级',
+        help_text='仅当角色为审核员时有效'
+    )
     is_active = models.BooleanField(default=True, verbose_name='是否激活')
     is_staff = models.BooleanField(default=False, verbose_name='是否员工')
     is_deleted = models.BooleanField(default=False, verbose_name='是否删除')

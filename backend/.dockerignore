@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# 日志
+*.log
+logs/
+
+# 环境变量
+.env
+.env.local
+
+# 数据库
+*.db
+*.sqlite3
+
+# 媒体和静态文件（构建时不需要）
+media/
+staticfiles/
+
+# 其他
+.DS_Store
+Thumbs.db
+

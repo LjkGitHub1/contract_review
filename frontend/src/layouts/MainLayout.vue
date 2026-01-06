@@ -32,6 +32,18 @@
           <el-icon><Setting /></el-icon>
           <span>规则引擎</span>
         </el-menu-item>
+        <el-menu-item index="/review-focus-config" v-if="userStore.user?.role === 'admin'">
+          <el-icon><Edit /></el-icon>
+          <span>审核重点配置</span>
+        </el-menu-item>
+        <el-menu-item index="/ai-model-config" v-if="userStore.user?.role === 'admin'">
+          <el-icon><Cpu /></el-icon>
+          <span>AI模型配置</span>
+        </el-menu-item>
+        <el-menu-item index="/ai-chat">
+          <el-icon><ChatDotRound /></el-icon>
+          <span>AI智能助手</span>
+        </el-menu-item>
         <el-menu-item index="/knowledge">
           <el-icon><Connection /></el-icon>
           <span>知识图谱</span>
@@ -48,6 +60,10 @@
           <el-icon><DocumentCopy /></el-icon>
           <span>操作日志</span>
         </el-menu-item>
+        <el-menu-item index="/permission-config" v-if="userStore.user?.role === 'admin'">
+          <el-icon><Lock /></el-icon>
+          <span>权限配置</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -56,16 +72,55 @@
           <h3>{{ pageTitle }}</h3>
         </div>
         <div class="header-right">
-          <el-dropdown @command="handleCommand">
+          <el-dropdown @command="handleCommand" trigger="click">
             <span class="user-info">
               <el-icon><User /></el-icon>
-              {{ userStore.user?.username || '用户' }}
+              {{ userStore.user?.real_name || userStore.user?.username || '用户' }}
               <el-icon class="el-icon--right"><ArrowDown /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="profile">个人中心</el-dropdown-item>
-                <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
+                <el-dropdown-item command="profile">
+                  <el-icon style="margin-right: 8px"><User /></el-icon>
+                  个人中心
+                </el-dropdown-item>
+                <!-- 最近登录用户 -->
+                <template v-if="recentUsersList && recentUsersList.length > 0">
+                  <el-dropdown-item divided disabled>
+                    <span style="color: #909399; font-size: 12px">最近登录</span>
+                  </el-dropdown-item>
+                  <el-dropdown-item
+                    v-for="recentUser in recentUsersList"
+                    :key="`recent-${recentUser.id}`"
+                    :command="`switch:${recentUser.id}`"
+                    class="recent-user-item"
+                  >
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; min-width: 200px">
+                      <div style="display: flex; align-items: center; flex: 1; min-width: 0">
+                        <el-icon style="margin-right: 8px; color: #409EFF; flex-shrink: 0"><RefreshRight /></el-icon>
+                        <div style="flex: 1; min-width: 0; overflow: hidden">
+                          <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+                            {{ recentUser.real_name || recentUser.username }}
+                          </div>
+                          <div style="font-size: 12px; color: #909399; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+                            {{ recentUser.email || recentUser.username }}
+                          </div>
+                        </div>
+                      </div>
+                      <el-icon
+                        class="remove-icon"
+                        @click.stop="handleRemoveRecentUser(recentUser.id)"
+                        style="margin-left: 10px; color: #909399; flex-shrink: 0; cursor: pointer"
+                      >
+                        <Close />
+                      </el-icon>
+                    </div>
+                  </el-dropdown-item>
+                </template>
+                <el-dropdown-item command="logout" divided>
+                  <el-icon style="margin-right: 8px"><SwitchButton /></el-icon>
+                  退出登录
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -82,12 +137,18 @@
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { ElMessage } from 'element-plus'
-import { ArrowDown, OfficeBuilding, DocumentCopy } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowDown, OfficeBuilding, DocumentCopy, Edit, Cpu, RefreshRight, Close, SwitchButton, Lock, ChatDotRound } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
+// 计算最近登录用户列表（排除当前用户）
+const recentUsersList = computed(() => {
+  if (!userStore.recentUsers) return []
+  return userStore.recentUsers.filter(u => u.id !== userStore.user?.id)
+})
 
 const activeMenu = computed(() => route.path)
 const pageTitle = computed(() => {
@@ -97,6 +158,8 @@ const pageTitle = computed(() => {
     '/templates': '模板库',
     '/reviews': '合同审核',
     '/rules': '规则引擎',
+    '/review-focus-config': '审核重点配置',
+    '/ai-model-config': 'AI模型配置',
     '/knowledge': '知识图谱',
     '/users': '用户管理',
     '/departments': '部门管理',
@@ -105,14 +168,40 @@ const pageTitle = computed(() => {
   return titles[route.path] || 'AI智能合同审核系统'
 })
 
-const handleCommand = (command) => {
+const handleCommand = async (command) => {
   if (command === 'logout') {
-    userStore.logout()
-    router.push('/login')
-    ElMessage.success('已退出登录')
+    try {
+      await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+        type: 'warning',
+      })
+      userStore.logout()
+      router.push('/login')
+      ElMessage.success('已退出登录')
+    } catch (error) {
+      // 用户取消
+    }
   } else if (command === 'profile') {
     ElMessage.info('个人中心功能开发中')
+  } else if (command.startsWith('switch:')) {
+    const userId = parseInt(command.split(':')[1])
+    const recentUser = userStore.recentUsers.find(u => u.id === userId)
+    if (recentUser) {
+      try {
+        await userStore.switchUser(recentUser)
+        ElMessage.success(`已切换到 ${recentUser.real_name || recentUser.username}`)
+        // 刷新页面以更新权限相关的内容
+        window.location.reload()
+      } catch (error) {
+        ElMessage.error('切换用户失败，请重新登录')
+        router.push('/login')
+      }
+    }
   }
+}
+
+const handleRemoveRecentUser = (userId) => {
+  userStore.removeRecentUserFromList(userId)
+  ElMessage.success('已移除')
 }
 
 // 页面加载时，如果有token但没有用户信息，则获取用户信息
@@ -120,6 +209,8 @@ onMounted(async () => {
   if (userStore.token && !userStore.user) {
     await userStore.fetchUserInfo()
   }
+  // 调试：检查最近登录用户
+  console.log('最近登录用户:', userStore.recentUsers)
 })
 </script>
 
@@ -188,6 +279,28 @@ onMounted(async () => {
   background-color: #f0f2f5;
   padding: 20px;
   overflow-y: auto;
+}
+
+.recent-user-item {
+  padding: 8px 20px;
+  min-width: 200px;
+}
+
+.recent-user-item:hover {
+  background-color: #f5f7fa;
+}
+
+.remove-icon {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.recent-user-item:hover .remove-icon {
+  opacity: 1;
+}
+
+.remove-icon:hover {
+  color: #f56c6c !important;
 }
 </style>
 

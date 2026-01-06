@@ -46,6 +46,52 @@
             />
           </el-select>
         </el-form-item>
+        
+        <!-- AI生成合同内容 -->
+        <el-form-item label="AI智能生成">
+          <el-card shadow="never" style="width: 100%">
+            <template #header>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>填写基本信息，AI将自动生成合同内容</span>
+                <el-button 
+                  type="primary" 
+                  :icon="MagicStick" 
+                  @click="showBasicInfoDialog = true"
+                  :disabled="!form.contract_type"
+                >
+                  填写基本信息
+                </el-button>
+              </div>
+            </template>
+            <el-button 
+              type="success" 
+              :icon="MagicStick" 
+              @click="handleAIGenerate"
+              :loading="aiGenerating"
+              :disabled="!form.contract_type || !basicInfo.party_a || !basicInfo.party_b"
+              style="width: 100%"
+            >
+              {{ aiGenerating ? 'AI生成中，请稍候（可能需要2-3分钟）...' : 'AI生成合同内容' }}
+            </el-button>
+            <div v-if="aiGenerating" style="margin-top: 10px;">
+              <el-alert
+                title="AI正在生成详细的合同内容，这可能需要2-3分钟，请耐心等待，不要关闭页面..."
+                type="info"
+                :closable="false"
+                show-icon
+              />
+            </div>
+            <div v-if="aiGeneratedContent" style="margin-top: 10px;">
+              <el-alert
+                title="AI已生成合同内容，您可以在此基础上进行编辑"
+                type="success"
+                :closable="false"
+                show-icon
+              />
+            </div>
+          </el-card>
+        </el-form-item>
+        
         <el-form-item label="上传文件">
           <el-upload
             class="upload-demo"
@@ -78,6 +124,44 @@
         </el-form-item>
       </el-form>
     </el-card>
+    
+    <!-- 基本信息填写对话框 -->
+    <el-dialog
+      v-model="showBasicInfoDialog"
+      title="填写合同基本信息"
+      width="600px"
+    >
+      <el-form :model="basicInfo" label-width="120px">
+        <el-form-item label="甲方（采购方）">
+          <el-input v-model="basicInfo.party_a" placeholder="请输入甲方名称" />
+        </el-form-item>
+        <el-form-item label="乙方（供应方）">
+          <el-input v-model="basicInfo.party_b" placeholder="请输入乙方名称" />
+        </el-form-item>
+        <el-form-item label="标的物/服务">
+          <el-input v-model="basicInfo.subject" placeholder="请输入标的物或服务内容" />
+        </el-form-item>
+        <el-form-item label="合同金额">
+          <el-input v-model="basicInfo.amount" placeholder="请输入合同金额，如：100万元" />
+        </el-form-item>
+        <el-form-item label="交付地点">
+          <el-input v-model="basicInfo.delivery_location" placeholder="请输入交付地点（可选）" />
+        </el-form-item>
+        <el-form-item label="交付时间">
+          <el-input v-model="basicInfo.delivery_time" placeholder="请输入交付时间（可选）" />
+        </el-form-item>
+        <el-form-item label="付款方式">
+          <el-input v-model="basicInfo.payment_method" placeholder="请输入付款方式（可选）" />
+        </el-form-item>
+        <el-form-item label="付款时间">
+          <el-input v-model="basicInfo.payment_time" placeholder="请输入付款时间（可选）" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showBasicInfoDialog = false">取消</el-button>
+        <el-button type="primary" @click="showBasicInfoDialog = false">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -85,7 +169,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Close } from '@element-plus/icons-vue'
+import { Close, MagicStick } from '@element-plus/icons-vue'
 import api from '@/utils/api'
 
 const router = useRouter()
@@ -109,6 +193,21 @@ const form = reactive({
   content: '',
   file_path: '',
 })
+
+const basicInfo = reactive({
+  party_a: '',
+  party_b: '',
+  subject: '',
+  amount: '',
+  delivery_location: '',
+  delivery_time: '',
+  payment_method: '',
+  payment_time: '',
+})
+
+const showBasicInfoDialog = ref(false)
+const aiGenerating = ref(false)
+const aiGeneratedContent = ref(false)
 
 const rules = {
   title: [{ required: true, message: '请输入合同标题', trigger: 'blur' }],
@@ -313,6 +412,92 @@ const handleSubmit = async () => {
       }
     }
   })
+}
+
+const handleAIGenerate = async () => {
+  if (!form.contract_type) {
+    ElMessage.warning('请先选择合同类型')
+    return
+  }
+  
+  if (!basicInfo.party_a || !basicInfo.party_b) {
+    ElMessage.warning('请先填写甲方和乙方信息')
+    showBasicInfoDialog.value = true
+    return
+  }
+  
+  aiGenerating.value = true
+  try {
+    // AI生成合同需要更长时间，设置超时时间为180秒（3分钟）
+    const response = await api.post('/contracts/contracts/generate_content/', {
+      contract_type: form.contract_type,
+      industry: form.industry || '',
+      template_id: form.template || null,
+      basic_info: basicInfo
+    }, {
+      timeout: 180000 // 180秒（3分钟）超时，因为AI生成详细合同需要较长时间
+    })
+    
+    console.log('AI生成响应:', response.data)
+    
+    if (response.data.success) {
+      const content = response.data.content
+      if (content && content.text) {
+        form.content = content.text
+        aiGeneratedContent.value = true
+        ElMessage.success('AI生成成功！请检查并编辑生成的内容')
+      } else if (content && content.html) {
+        // 如果只有HTML，提取文本
+        const tempDiv = document.createElement('div')
+        tempDiv.innerHTML = content.html
+        form.content = tempDiv.textContent || tempDiv.innerText || ''
+        aiGeneratedContent.value = true
+        ElMessage.success('AI生成成功！请检查并编辑生成的内容')
+      } else {
+        // 如果content是字符串，直接使用
+        if (typeof content === 'string' && content.trim()) {
+          form.content = content
+          aiGeneratedContent.value = true
+          ElMessage.success('AI生成成功！请检查并编辑生成的内容')
+        } else {
+          ElMessage.warning('生成的内容为空，请检查配置')
+        }
+      }
+    } else {
+      // 即使不成功，也尝试使用返回的内容
+      if (response.data.content) {
+        const content = response.data.content
+        if (content && content.text) {
+          form.content = content.text
+          aiGeneratedContent.value = true
+        } else if (typeof content === 'string' && content.trim()) {
+          form.content = content
+          aiGeneratedContent.value = true
+        }
+      }
+      ElMessage.warning(response.data.message || 'AI生成失败，已使用模板生成')
+    }
+  } catch (error) {
+    console.error('AI生成失败:', error)
+    console.error('错误详情:', error.response?.data)
+    
+    // 处理超时错误
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      ElMessage.error({
+        message: 'AI生成超时，生成详细合同需要较长时间（可能需要3-5分钟）。建议：1. 检查网络连接 2. 稍后重试 3. 或联系管理员检查AI服务配置',
+        duration: 8000,
+        showClose: true
+      })
+    } else {
+      const errorMsg = error.response?.data?.error || 
+                      error.response?.data?.detail || 
+                      error.message || 
+                      'AI生成失败，请稍后重试'
+      ElMessage.error(errorMsg)
+    }
+  } finally {
+    aiGenerating.value = false
+  }
 }
 
 onMounted(() => {

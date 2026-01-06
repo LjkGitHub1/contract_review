@@ -4,10 +4,19 @@
       <template #header>
         <div class="card-header">
           <span>用户列表</span>
-          <el-button type="primary" @click="handleCreate">
-            <el-icon><Plus /></el-icon>
-            新建用户
-          </el-button>
+          <div style="display: flex; gap: 10px">
+            <el-button
+              type="danger"
+              :disabled="selectedUsers.length === 0"
+              @click="handleBatchDelete"
+            >
+              批量删除 ({{ selectedUsers.length }})
+            </el-button>
+            <el-button type="primary" @click="handleCreate">
+              <el-icon><Plus /></el-icon>
+              新建用户
+            </el-button>
+          </div>
         </div>
       </template>
 
@@ -28,7 +37,13 @@
         </el-form-item>
       </el-form>
 
-      <el-table :data="users" v-loading="loading" style="width: 100%">
+      <el-table
+        :data="users"
+        v-loading="loading"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="email" label="邮箱" />
         <el-table-column prop="real_name" label="真实姓名" />
@@ -145,6 +160,7 @@ const departments = ref([])
 const dialogVisible = ref(false)
 const isEdit = ref(false)
 const formRef = ref(null)
+const selectedUsers = ref([])
 
 const searchForm = reactive({
   username: '',
@@ -266,6 +282,10 @@ const handleEdit = (row) => {
   dialogVisible.value = true
 }
 
+const handleSelectionChange = (selection) => {
+  selectedUsers.value = selection
+}
+
 const handleDelete = async (row) => {
   try {
     await ElMessageBox.confirm('确定要删除该用户吗？', '提示', {
@@ -278,6 +298,54 @@ const handleDelete = async (row) => {
     if (error !== 'cancel') {
       ElMessage.error('删除失败')
     }
+  }
+}
+
+const handleBatchDelete = async () => {
+  if (selectedUsers.value.length === 0) {
+    ElMessage.warning('请选择要删除的用户')
+    return
+  }
+  
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除选中的 ${selectedUsers.value.length} 个用户吗？`,
+      '批量删除',
+      {
+        type: 'warning',
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+      }
+    )
+    
+    loading.value = true
+    let successCount = 0
+    let failCount = 0
+    
+    for (const user of selectedUsers.value) {
+      try {
+        await api.delete(`/users/users/${user.id}/`)
+        successCount++
+      } catch (error) {
+        failCount++
+        console.error(`删除用户 ${user.username} 失败:`, error)
+      }
+    }
+    
+    if (failCount === 0) {
+      ElMessage.success(`成功删除 ${successCount} 个用户`)
+    } else {
+      ElMessage.warning(`成功删除 ${successCount} 个用户，失败 ${failCount} 个`)
+    }
+    
+    selectedUsers.value = []
+    fetchUsers()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('批量删除失败')
+    }
+  } finally {
+    loading.value = false
   }
 }
 
