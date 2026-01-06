@@ -2,7 +2,7 @@
   <el-container class="layout-container">
     <el-aside width="250px" class="sidebar">
       <div class="logo">
-        <h2>AI合同审核</h2>
+        <h2>AI智能合同审核</h2>
       </div>
       <el-menu
         :default-active="activeMenu"
@@ -43,6 +43,10 @@
         <el-menu-item index="/ai-chat">
           <el-icon><ChatDotRound /></el-icon>
           <span>AI智能助手</span>
+        </el-menu-item>
+        <el-menu-item index="/rule-matches">
+          <el-icon><List /></el-icon>
+          <span>规则匹配记录</span>
         </el-menu-item>
         <el-menu-item index="/knowledge">
           <el-icon><Connection /></el-icon>
@@ -137,8 +141,13 @@
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+<<<<<<< HEAD
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown, OfficeBuilding, DocumentCopy, Edit, Cpu, RefreshRight, Close, SwitchButton, Lock, ChatDotRound } from '@element-plus/icons-vue'
+=======
+import { ElMessage } from 'element-plus'
+import { ArrowDown, OfficeBuilding, DocumentCopy, List } from '@element-plus/icons-vue'
+>>>>>>> 38c605c8f8a4027af680fb54da514366df23a6ac
 
 const route = useRoute()
 const router = useRouter()
@@ -158,8 +167,12 @@ const pageTitle = computed(() => {
     '/templates': '模板库',
     '/reviews': '合同审核',
     '/rules': '规则引擎',
+<<<<<<< HEAD
     '/review-focus-config': '审核重点配置',
     '/ai-model-config': 'AI模型配置',
+=======
+    '/rule-matches': '规则匹配记录',
+>>>>>>> 38c605c8f8a4027af680fb54da514366df23a6ac
     '/knowledge': '知识图谱',
     '/users': '用户管理',
     '/departments': '部门管理',

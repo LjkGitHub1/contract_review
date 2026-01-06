@@ -20,12 +20,24 @@
         </div>
       </template>
 
-      <el-form :inline="true" :model="searchForm" class="search-form">
+      <el-form :inline="true" :model="searchForm" class="search-form" @submit.prevent="handleSearch">
         <el-form-item label="部门名称">
-          <el-input v-model="searchForm.name" placeholder="请输入部门名称" clearable />
+          <el-input 
+            v-model="searchForm.name" 
+            placeholder="请输入部门名称" 
+            clearable 
+            @keyup.enter="handleSearch"
+            style="min-width: 180px"
+          />
         </el-form-item>
         <el-form-item label="部门编码">
-          <el-input v-model="searchForm.code" placeholder="请输入部门编码" clearable />
+          <el-input 
+            v-model="searchForm.code" 
+            placeholder="请输入部门编码" 
+            clearable 
+            @keyup.enter="handleSearch"
+            style="min-width: 180px"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>
