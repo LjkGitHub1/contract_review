@@ -141,13 +141,8 @@
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-<<<<<<< HEAD
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, OfficeBuilding, DocumentCopy, Edit, Cpu, RefreshRight, Close, SwitchButton, Lock, ChatDotRound } from '@element-plus/icons-vue'
-=======
-import { ElMessage } from 'element-plus'
-import { ArrowDown, OfficeBuilding, DocumentCopy, List } from '@element-plus/icons-vue'
->>>>>>> 38c605c8f8a4027af680fb54da514366df23a6ac
+import { ArrowDown, OfficeBuilding, DocumentCopy, Edit, Cpu, RefreshRight, Close, SwitchButton, Lock, ChatDotRound, List } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -167,12 +162,9 @@ const pageTitle = computed(() => {
     '/templates': '模板库',
     '/reviews': '合同审核',
     '/rules': '规则引擎',
-<<<<<<< HEAD
     '/review-focus-config': '审核重点配置',
     '/ai-model-config': 'AI模型配置',
-=======
     '/rule-matches': '规则匹配记录',
->>>>>>> 38c605c8f8a4027af680fb54da514366df23a6ac
     '/knowledge': '知识图谱',
     '/users': '用户管理',
     '/departments': '部门管理',
